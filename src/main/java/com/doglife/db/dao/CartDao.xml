@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doglife.db.dao.CartDao">
+
+	<!-- 장바구니 -->
+	<select id="selectCartList" parameterType="String" resultType="com.doglife.db.dto.MyCartDto">
+		SELECT * FROM myorderlist WHERE memberId=#{memberId} AND orderStatus = '장바구니'
+	</select>
+	
+	<insert id="insertCartProduct" parameterType="com.doglife.db.dto.MyOrderDto">
+	INSERT INTO myorder
+		VALUES (NULL,'장바구니', #{productName}, #{orderOption}, #{orderQuantity}, #{orderPrice}, #{earnedPoint}, NULL, NULL, #{pnum}, #{memberId})
+	</insert>
+	<delete id="deleteCartProducts" parameterType="String">
+		DELETE FROM myorder WHERE memberId=#{memberId} AND orderStatus = '장바구니'
+	</delete>
+	
+	<delete id="deleteCartProduct" parameterType="Integer">
+		DELETE FROM myorder WHERE orderNum=#{orderNum}
+	</delete>	
+	
+	<select id="selectMemberInfo" parameterType="String" resultType="com.doglife.db.dto.MemberDto">
+		SELECT * FROM membertable WHERE memberId = #{customerId}
+	</select>
+	
+	<!-- 결제 -->
+	<select id="selectOrderList" parameterType="com.doglife.db.dto.ListDto" resultType="com.doglife.db.dto.SellerOrderListDto">
+		SELECT * FROM myorderlist WHERE memberId=#{memberId} AND (orderStatus = '결제완료' OR orderStatus = '배송완료') ORDER BY orderNum DESC LIMIT #{pageNum} , #{listCnt}
+	</select>
+	
+	
+	<update id="buyProduct" parameterType="com.doglife.db.dto.MyOrderDto">
+		UPDATE myorder SET orderDate= now(), orderStatus = '결제완료', paymentId = #{paymentId}
+		WHERE orderNum=#{orderNum}
+	</update>
+	
+	<update id="addProductCnt" parameterType="com.doglife.db.dto.MyOrderDto">
+		UPDATE product SET soldCnt =+ #{orderQuantity} WHERE pnum=#{pnum}
+	</update>
+	
+	<update id="addCustomerPoint" parameterType="com.doglife.db.dto.MemberDto">
+		UPDATE membertable SET memberPoint = #{memberPoint} WHERE memberId=#{memberId}
+	</update>
+	
+	<update id="useCustomerPoint" parameterType="com.doglife.db.dto.MyOrderDto">
+		UPDATE membertable SET memberPoint = #{memberPoint} where memberId = #{memberId}
+	</update>
+	
+	<select id="selectOrderInfo" parameterType="int" resultType="com.doglife.db.dto.MyOrderDto">
+		SELECT * FROM myorder WHERE orderNum = #{orderNum}
+	</select>
+	
+	<!-- 환불 -->
+	<update id="refundOrder" parameterType="com.doglife.db.dto.MyOrderDto">
+		UPDATE myorder SET orderStatus = '환불완료' WHERE orderNum=#{orderNum}
+	</update>
+
+	<update id="subtractPoint" parameterType="com.doglife.db.dto.MemberDto">
+		UPDATE membertable SET memberPoint = #{memberPoint} WHERE memberId=#{memberId}
+	</update>
+
+	<select id="adoptionCountSelect" parameterType="String" resultType="Integer">
+		SELECT count(*) FROM myorder WHERE memberId=#{memberId} 
+	</select>
+</mapper>

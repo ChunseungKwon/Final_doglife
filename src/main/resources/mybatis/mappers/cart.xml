@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mapper namespace="mapper.cart">
+
+	<select id="selectCountInCart" resultType="String"
+		parameterType="com.doglife.db.dto.CartDto">
+	<![CDATA[
+		select decode(count(*),0,'false','true') from cart where pnum=#{pnum} and customerID=#{customerID}
+			]]>
+	</select>
+
+	<insert id="insertProductInCart"
+		parameterType="com.doglife.db.dto.CartDto">
+	<![CDATA[
+		insert into cart(cartNum, pnum, customerID) values (#{cartNum}, #{pnum}, #{customerID})
+	]]>
+	</insert>
+
+	<resultMap id="cartResult" type="com.doglife.db.dto.CartDto">
+		<result property="cartNum" column="cartNum" />
+		<result property="pnum" column="pnum" />
+		<result property="customerID" column="customerID" />
+		<result property="quantity" column="quantity" />
+	</resultMap>
+
+	<resultMap id="productResult" type="com.doglife.db.dto.ProductDto">
+		<result property="pnum" column="pnum" />
+		<result property="pname" column="pname" />
+		<result property="pprice" column="pprice" />
+		<result property="ppoint" column="ppoint" />
+	</resultMap>
+
+	<select id="selectCartList" resultMap="cartResult"
+		parameterType="com.doglife.db.dto.CartDto">
+<![CDATA[
+	SELECT * FROM cart WHERE customerID=#{customerID}
+]]>
+	</select>
+
+	<select id="selectGoodsList" resultMap="productResult"
+		parameterType="java.util.Map">
+<![CDATA[ 
+	SELECT p.*, pf.* FROM product p, productfile pf WHERE p.pnum=pf.pnum AND pf.sysname='main_image' AND p.pnum in 
+]]>
+		<foreach item="item" collection="list" open="(" separator=","
+			close=")">
+			#{item.pnum}
+		</foreach>
+		ORDER BY p.regDate DESC
+	</select>
+</mapper>

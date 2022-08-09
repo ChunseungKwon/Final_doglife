@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doglife.db.dao.SellerPageDao">
+	<select id="selectProductList" parameterType="String" resultType="com.doglife.db.dto.ProductDto">
+		SELECT * FROM product WHERE sellerID = #{sellerID}
+	</select>
+	<select id="selectOrderedList" parameterType="String" resultType="com.doglife.db.dto.SellerOrderListDto">
+		SELECT * FROM sellerorderlist WHERE sellerID = #{sellerID} AND orderStatus = '결제완료'
+	</select>
+	<select id="selectDeliveredList" parameterType="String" resultType="com.doglife.db.dto.SellerOrderListDto">
+		SELECT * FROM sellerorderlist WHERE sellerID = #{sellerID} AND orderStatus = '배송완료'
+	</select>
+
+	<select id="selectRefundList" parameterType="String" resultType="com.doglife.db.dto.SellerOrderListDto">
+		SELECT * FROM sellerorderlist WHERE sellerID = #{sellerID} AND orderStatus = '환불완료'
+	</select>
+	
+	<update id="deliverProduct" parameterType="com.doglife.db.dto.MyOrderDto">
+		UPDATE myorder SET orderStatus='배송완료' WHERE orderNum=#{orderNum}
+	</update>
+
+	<update id="refundProduct" parameterType="com.doglife.db.dto.MyOrderDto">
+		UPDATE myorder SET orderStatus='환불완료' WHERE orderNum=#{orderNum}
+	</update>
+
+	<insert id="insertProduct" 
+		parameterType="com.doglife.db.dto.ProductDto"
+		useGeneratedKeys="true" keyProperty="pnum">
+		<selectKey keyProperty="pnum" resultType="Integer"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO product
+		VALUES (NULL,#{pname},#{pprice}, #{ppoint}, #{pinfo}, #{pquantity},NULL,#{pcategory},DEFAULT, #{sellerID},DEFAULT,DEFAULT, NULL, NULL)
+	</insert>
+	
+	
+	<insert id="insertOption" parameterType="com.doglife.db.dto.ProductOptionDto">
+		INSERT INTO productOption (optionnum, poption, choiceA, choiceB, choiceC, pNum) 
+		 VALUES (#{optionnum}, #{poption}, #{choiceA}, #{choiceB}, #{choiceC}, #{pnum})
+	</insert>
+	
+	<insert id="insertProductImage" parameterType="HashMap">
+		INSERT INTO productimage
+		VALUES (NULL,#{pnum},#{oriname},#{sysname})
+	</insert>
+
+	<update id="addThumbnail" parameterType="com.doglife.db.dto.ProductDto">
+		UPDATE product SET thumbnail=#{thumbnail}, thumbsysname=#{thumbsysname} WHERE pnum = #{pnum}
+	</update>
+
+	<select id="getProductList" parameterType="Integer"
+		resultType="com.doglife.db.dto.ProductDto">
+		SELECT * FROM product WHERE pnum=#{pnum}
+	</select>
+		
+	<select id="getProductImage" parameterType="Integer"
+		resultType="com.doglife.db.dto.ProductFileDto">
+		SELECT * FROM productimage WHERE pnum=#{pnum}
+	</select>
+	
+	<select id="getProductOption" parameterType="Integer"
+		resultType="com.doglife.db.dto.ProductOptionDto">
+		SELECT * FROM productoption WHERE pnum=#{pnum}
+	</select>
+
+	<update id="updateProductInfo"
+		parameterType="com.doglife.db.dto.ProductDto">
+		UPDATE product SET pname=#{pname}, 
+						 pprice=#{pprice},  ppoint=#{ppoint}, pinfo=#{pinfo},
+						 pquantity=#{pquantity},  pcategory=#{pcategory}
+		WHERE pnum=#{pnum}
+	</update>
+	
+	<update id="updateProductOption"
+		parameterType="com.doglife.db.dto.ProductOptionDto">
+		UPDATE productoption SET 
+						 poption=#{poption},  choiceA=#{choiceA}, choiceB=#{choiceB},
+						 choiceC=#{choiceC}
+		WHERE pnum=#{pnum} and  optionnum=#{optionnum}
+	</update>
+	
+	<update id="updateProductImage"
+		parameterType="com.doglife.db.dto.ProductFileDto">
+		UPDATE productimage SET pname=#{pname}, 
+						   oriname=#{oriname}, sysname=#{sysname}
+		WHERE pnum=#{pnum}
+	</update>
+	
+	<delete id="deleteProductImage"
+		parameterType="Integer">
+		DELETE FROM productimage WHERE pnum=#{pnum}
+	</delete>
+	
+	<delete id="deleteProductOption"
+		parameterType="Integer">
+		DELETE FROM productoption WHERE pnum=#{pnum}
+	</delete>
+	
+	<delete id="deleteProduct"
+		parameterType="Integer">
+		DELETE FROM product WHERE pnum=#{pnum};
+	</delete>
+	
+	<select id="selectQnaList" parameterType="String" resultType="com.doglife.db.dto.ShopQnADto">
+		SELECT * FROM shopqna WHERE sellerID = #{sellerID}
+	</select>
+
+	<update id="insertAnswer" parameterType="com.doglife.db.dto.ShopQnADto">
+		UPDATE shopqna SET sqanswer=#{sqanswer}, sqstatus='답변완료', adate=now() WHERE sqnum = #{sqnum}
+	</update>
+	
+	<select id="selectQnaAnswer" parameterType="int" resultType="com.doglife.db.dto.ShopQnADto">
+		SELECT * FROM shopqna WHERE sqnum = #{sqnum}
+	</select>	
+	
+	<delete id="deleteProductQnA" parameterType="Integer">
+		DELETE FROM shopqna WHERE pnum=#{pnum}
+	</delete>
+	
+	<delete id="deleteProductReview" parameterType="Integer">
+		DELETE FROM shopreview WHERE pnum=#{pnum}
+	</delete>
+	
+	
+	
+</mapper>

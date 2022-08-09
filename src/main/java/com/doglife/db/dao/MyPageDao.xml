@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doglife.db.dao.MyPageDao">
+
+	<select id="myadoptionSelect" parameterType="String"
+		resultType="com.doglife.db.dto.AdoptionListDto">
+		SELECT * FROM adoptionlist where memberId=#{memberId}
+	</select>
+	
+	<delete id="myAdoptionDelete" parameterType="Integer">
+		DELETE FROM
+		adoptionapp WHERE aaKey=#{aaKey}
+	</delete>
+
+	<insert id="adoptionReviewRegister"
+		parameterType="com.doglife.db.dto.DogReviewDto">
+		<selectKey keyProperty="drNum" resultType="Integer"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO dogReview VALUES (null,#{drTitle},#{drContent}, 
+		 default,NULL,#{memberId},#{dogNum},null,null)
+	</insert>
+	
+	<delete id="pictureDelete" parameterType="Integer">
+		DELETE FROM dogpicture WHERE drNum=#{drNum}
+	</delete>
+	
+	<insert id="reviewFileInsert" parameterType="HashMap">
+		INSERT INTO dogpicture
+		VALUES (NULL, #{drNum},#{dogNum}, NULL, #{oriname},#{sysname})
+	</insert>
+	
+	<update id="reviewFileUpdate" parameterType = "com.doglife.db.dto.DogReviewDto">
+		UPDATE dogreview SET thumbnail = #{thumbnail}, thumbnailsys=#{thumbnailsys} WHERE drNum = #{drNum}
+	</update>
+
+	<select id="adoptionReviewWrite" parameterType="Integer"
+		resultType="com.doglife.db.dto.DogReviewDto">
+		SELECT * FROM dog WHERE dogNum=#{dogNum}
+	</select>
+	
+	<select id="adoptionreviewlist" resultType="com.doglife.db.dto.DogReviewDto">
+		SELECT * FROM dogreview
+	</select>
+	
+	<select id="myContentsUpdate" parameterType="Integer"
+		resultType="com.doglife.db.dto.DogReviewDto">
+		SELECT * FROM dogreview WHERE drNum=#{drNum}
+	</select>
+	
+	<select id="pictureUpdate" parameterType="Integer"
+		resultType="com.doglife.db.dto.DFilePicture">
+		SELECT * FROM dogpicture WHERE drNum=#{drNum}
+	</select>
+	
+	<delete id="reviewFileDelete" parameterType="String">
+		DELETE FROM dogpicture WHERE sysname=#{sysname}
+	</delete>
+	
+	<update id="adoptionReviewSetUpdate" parameterType="com.doglife.db.dto.DogReviewDto">
+		UPDATE dogreview SET drTitle=#{drTitle},drContent=#{drContent},editDate=DEFAULT 
+		WHERE drNum=#{drNum}
+	</update>
+	
+	<delete id="reviewDelete" parameterType="Integer">
+		DELETE FROM dogreview WHERE drNum=#{drNum}
+	</delete>
+	<select id="reviewFileSelect" parameterType="Integer"
+		resultType="com.doglife.db.dto.DFilePicture">
+		SELECT * FROM dogreview WHERE drNum=#{drNum}
+	</select>
+	
+	<select id="mycontentslist" parameterType="String"
+		resultType="com.doglife.db.dto.DogReviewDto">
+		SELECT * FROM dogreview WHERE memberId=#{memberId}
+	</select>
+	
+	<select id="getMemberInformation" parameterType="String" resultType = "com.doglife.db.dto.MemberDto">
+		select * from memberTable where memberId = #{memberId}
+	</select>
+	
+	<update id="adoptionStatus" parameterType="Integer">
+		UPDATE adoptionapp SET drStatus = null WHERE dogNum = #{dogNum} 
+	</update>
+	
+	<select id="shopMyContentsList" parameterType="String" resultType="com.doglife.db.dto.ShopReviewDto">
+		Select * from shopreview where memberId=#{memberId}
+	</select>
+	
+	<select id="productReviewUpdate" parameterType="Integer" resultType="com.doglife.db.dto.ShopReviewDto">
+		SELECT * FROM shopreview WHERE srnum=#{srnum}
+	</select>
+	
+	<update id="productReviewUpdateProc"
+		parameterType="com.doglife.db.dto.ShopReviewDto">
+		UPDATE shopreview SET srtitle=#{srtitle},
+		srcontent=#{srcontent}, srRate = #{srRate},
+		editDate=default where srnum = #{srnum}
+	</update>
+</mapper>

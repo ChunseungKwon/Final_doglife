@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doglife.db.dao.BoardDao">
+
+	<select id="boardListSelect"
+		parameterType="com.doglife.db.dto.ListDto"
+		resultType="com.doglife.db.dto.BoardDto">
+		SELECT * FROM announcement
+		<if test="colname != null and colname != ''">
+			WHERE ${colname} LIKE concat('%',#{keyword},'%')
+		</if>
+		order by aNum desc LIMIT #{pageNum}, #{listCnt}
+	</select>
+
+	<select id="boardCountSelect"
+		parameterType="com.doglife.db.dto.ListDto" resultType="Integer">
+		SELECT count(*) FROM announcement
+		<if test="colname != null and colname != ''">
+			WHERE ${colname} LIKE concat('%',#{keyword},'%')
+		</if>
+	</select>
+
+	<select id="noticeContents" parameterType="Integer"
+		resultType="com.doglife.db.dto.BoardDto">
+		select * from announcement where anum = #{anum}
+	</select>
+
+	<update id="viewsUpdate" parameterType="Integer">
+		update announcement set
+		views= views+1 where anum = #{anum}
+	</update>
+
+	<select id="getPreviousPage" parameterType="Integer"
+		resultType="String">
+		select memberId from announcement<![CDATA[where aNum < #{pNum}]]>
+		order by anum
+		asc limit 1
+	</select>
+
+	<select id="getNextPage" parameterType="Integer"
+		resultType="String">
+		select memberId from announcement<![CDATA[where aNum > #{pNum}]]>
+		order by anum
+		asc limit 1
+	</select>
+	
+		<select id="getPreviousPageNum" parameterType="Integer"
+		resultType="Integer">
+		select anum from announcement<![CDATA[where aNum < #{pNum}]]>
+		order by anum
+		desc limit 1
+	</select>
+
+	<select id="getNextPageNum" parameterType="Integer"
+		resultType="Integer">
+		select anum from announcement<![CDATA[where aNum > #{pNum}]]>
+		order by anum
+		asc limit 1
+	</select>
+
+</mapper>

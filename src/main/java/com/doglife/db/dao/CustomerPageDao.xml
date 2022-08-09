@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doglife.db.dao.CustomerPageDao">
+	
+	<insert id="productReviewRegister" parameterType="com.doglife.db.dto.ShopReviewDto">
+		INSERT INTO shopreview (srTitle, srContent, srRate, regDate, pNum, memberId, sysname, oriname )
+		VALUES (#{srtitle}, #{srcontent}, #{srRate},
+		 #{regDate}, #{pnum}, #{memberId}, #{sysname}, #{oriname})
+	</insert>
+	
+	<update id="updateProductReview"
+		parameterType="com.doglife.db.dto.ShopReviewDto">
+		UPDATE shopreview SET srTitle=#{srTitle}, 
+						 srContent=#{srContent},  srRate=#{srRate}, sysname=#{sysname},
+						 oriname=#{oriname}
+		WHERE pnum=#{pnum}
+	</update>
+	
+	<delete id="deleteProductReview" parameterType="Integer">
+		DELETE FROM shopreview WHERE pNum = #{pnum}
+	</delete>
+	
+<!-- Rating -->
+	<select id="getRatingAverage" resultType="double">
+		SELECT pavg FROM product WHERE pnum = #{pnum}  	
+  	</select>
+  	<select id="getTotalReviews" resultType="Integer">
+  		SELECT count(*) pavg FROM shopreview WHERE pnum = #{pnum}
+  	</select>
+
+	<update id="updateRating">
+		UPDATE product SET pavg = #{pavg} WHERE pnum = #{pnum}
+	</update>
+</mapper>

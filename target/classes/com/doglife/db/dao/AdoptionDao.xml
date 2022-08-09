@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doglife.db.dao.AdoptionDao">
+
+	<update id="addAdoptionResult">
+		UPDATE memberTable SET
+		testresult = #{a.resulta} WHERE
+		memberId = #{b.memberId}
+	</update>
+
+	<select id="getBreedRecommend"
+		parameterType="com.doglife.db.dto.ListDto"
+		resultType="com.doglife.db.dto.DogRecommendDto">
+		SELECT * FROM dogRecommend
+	</select>
+
+<select id="adoptionListSelect"
+		parameterType="com.doglife.db.dto.ListDto"
+		resultType="com.doglife.db.dto.DogDto">
+		SELECT * FROM Dog
+		<if test="colname != null and colname != ''">
+			WHERE ${colname} LIKE concat('%',#{keyword},'%')
+		</if>
+		LIMIT #{pageNum}, #{listCnt}
+	</select>
+
+	<select id="adoptionCountSelect"
+		parameterType="com.doglife.db.dto.ListDto" resultType="Integer">
+		SELECT count(*)
+		FROM dog where aaStatus = '입양대기' 
+	</select>
+	
+	<select id="getAdoptionReview"
+		parameterType="com.doglife.db.dto.ListDto"
+		resultType="com.doglife.db.dto.DogReviewDto">
+		SELECT * FROM DogReview LIMIT #{pageNum}, #{listCnt}
+	</select>
+
+	<select id="reviewCountSelect"
+		parameterType="com.doglife.db.dto.ListDto" resultType="Integer">
+		SELECT count(*)
+		FROM dogReview
+	</select>
+
+	<insert id="adoptionReviewRegister"
+		parameterType="com.doglife.db.dto.DogReviewDto">
+		<selectKey keyProperty="drNum" resultType="Integer"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO dogReview
+		VALUES (null, #{drTitle}, #{drContent}, DEFAULT,
+		NULL, #{memberId}, #{dogNum})
+	</insert>
+
+	<delete id="deleteAdoptionFile" parameterType="Integer">
+		DELETE FROM
+		dogpicture WHERE drNum=#{drNum}
+	</delete>
+
+	<delete id="boardDelete" parameterType="Integer">
+		DELETE FROM dogreview
+		WHERE drNum=#{drNum}
+	</delete>
+
+	<select id="reviewSelect"
+		resultType="com.doglife.db.dto.DogReviewDto" parameterType="Integer">
+		SELECT *
+		FROM dogreview WHERE drNum=#{drNum}
+	</select>
+
+	<insert id="fileInsert" parameterType="HashMap">
+		INSERT INTO dogpicture
+		VALUES (null, #{drNum}, #{dogNum}, null, #{sysname}, #{oriname})
+	</insert>
+
+	<update id="ReviewUpdate"
+		parameterType="com.doglife.db.dto.DogReviewDto">
+		UPDATE dogreview SET drTitle=#{drTitle},
+		drContent=#{drContent} WHERE drNum=#{drNum}
+	</update>
+
+	<select id="fileSelect" parameterType="Integer"
+		resultType="com.doglife.db.dto.DFilePicture">
+		SELECT * FROM dogpicture WHERE drNum=#{drNum}
+	</select>
+
+	<delete id="fileDelete" parameterType="String">
+		DELETE FROM dogpicture
+		WHERE sysname=#{sysname}
+	</delete>
+
+	<select id="getbList"
+		resultType="com.doglife.db.dto.DogRecommendDto">
+		SELECT * FROM DogRecommend
+	</select>
+
+	<select id="getdList" parameterType="com.doglife.db.dto.ListDto" resultType="com.doglife.db.dto.DogDto">
+		SELECT * FROM dog WHERE
+		aaStatus = '입양대기' ORDER BY dogNum DESC LIMIT #{pageNum}, #{listCnt}
+	</select>
+
+	<select id="dogListSelect"
+		resultType="com.doglife.db.dto.DogDto">
+		SELECT * FROM dog WHERE aaStatus != ('승인완료')
+	</select>
+
+	<select id="showDogInfo" parameterType="Integer"
+		resultType="com.doglife.db.dto.DogDto">
+		SELECT * FROM dog WHERE dogNum=#{dogNum}
+	</select>
+
+	<select id="dogpicSelect" parameterType="Integer"
+		resultType="com.doglife.db.dto.DFilePicture">
+		SELECT * FROM dogpicture WHERE dogNum=#{dogNum}
+	</select>
+
+	<select id="dogdSelect" parameterType="Integer"
+		resultType="com.doglife.db.dto.DogDto">
+		SELECT * FROM dog WHERE dogNum=#{dogNum}
+	</select>
+
+	<insert id="userDogRegister"
+		parameterType="com.doglife.db.dto.AdoptionAppDto">
+		INSERT INTO adoptionapp VALUES (NULL, #{aaName},
+		#{aaAddress}, #{aaPnum}, '승인대기', #{dogNum},default, #{aaPayNo},
+		#{memberId}, #{dogPrice}, default)
+	</insert>
+
+	<update id="dogStatusUpdate" parameterType="Integer">
+		UPDATE dog SET
+		aaStatus = '승인대기' WHERE dogNum = #{dogNum}
+	</update>
+
+	<select id="selectAdoptionAppInfo" parameterType="Integer"
+		resultType="com.doglife.db.dto.AdoptionAppDto">
+		SELECT * FROM AdoptionApp WHERE aaKey = #{aaKey}
+	</select>
+
+	<delete id="deleteAdoptionProc" parameterType="Integer">
+		DELETE FROM
+		AdoptionApp WHERE aaKey = #{aaKey}
+	</delete>
+	
+	<update id="updateDogStatus" parameterType="Integer">
+		UPDATE dog SET aaStatus = '입양대기' WHERE dogNum=#{dogNum}
+	</update>
+</mapper>

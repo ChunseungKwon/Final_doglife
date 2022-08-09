@@ -1,0 +1,145 @@
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+	font-weight: 500;
+	font-size: 16px;
+	font-family: "SF Pro KR", "SF Pro Text", "Yoon Gothic", "Myriad Set Pro",
+		system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+		"SF Pro Icons", "Apple Legacy Icons", "Apple Gothic", "HY Gulim",
+		"MalgunGothic", "HY Dotum", "Lexi Gulim", "Helvetica Neue",
+		"Helvetica", "Arial", sans-serif;
+}
+
+header {
+	background-color: #f8f8fa;
+	height: 160px;
+	min-width: 1323px;
+}
+
+.header1 {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 30px 10%;
+	padding-bottom: 0px;
+}
+
+.buttons {
+	width: 400px;
+	align-items: center;
+}
+.button-74 {
+	width:120px;
+	border:solid;
+	background-color: #fff;
+	border: 2px solid #422800;
+	border-radius: 30px;
+	box-shadow: #422800 4px 4px 0 0;
+	color: #422800;
+	cursor: pointer;
+	display: inline-block;
+	font-weight: 600;
+	font-size: 13px;
+	padding: 0 10px;
+	line-height: 30px;
+	text-align: center;
+	text-decoration: none;
+	user-select: none;
+	-webkit-user-select: none;
+	touch-action: manipulation;
+}
+
+.button-74:hover {
+	background-color: #85b0ff;
+	color:#fff;
+}
+
+.button-74:active {
+	box-shadow: #422800 2px 2px 0 0;
+	transform: translate(2px, 2px);
+}
+
+@media ( min-width : 768px) {
+	.button-74 {
+		min-width: 120px;
+		padding: 0 25px;
+	}
+}
+
+.logo {
+	align-items:center;
+	width:680px;
+	flex: 1;
+	padding:0 73px;
+	cursor: pointer;
+}
+
+.login-logout {
+	list-style: none;
+}
+
+#login-logout-navbar {
+	display: inline-block;
+	padding: 0px 20px;
+}
+
+.login-logout-navbar-link {
+	text-decoration: none;
+	color: #767676;
+	transition: all 0.3s ease 0s;
+}
+
+.login-logout-navbar-link:hover {
+	color: #999999;
+	cursor: pointer;
+}
+
+.navigation-bar-bar {
+	text-align: center;
+	height: 80px;
+}
+
+.navigation-bar-bar ul {
+	list-style: none;
+	padding: 0;
+	position: absolute;
+}
+
+.navigation-bar-bar ul li {
+	float: left;
+	margin-top: 20px;
+}
+
+.navigation-bar-bar ul li a {
+	width: 150px;
+	color: #767676;
+	display: block;
+	text-decoration: none;
+	text-align: center;
+	padding: 10px;
+	border-radius: 10px;
+}
+
+.navigation-bar-bar ul li a:hover {
+	background: #f1f1f5;
+}
+
+.navigation-bar-bar ul li ul {
+	display: none;
+	background: #f8f8fa;
+	z-index: 111;
+}
+
+.navigation-bar-bar ul li:hover ul {
+	display: block;
+	z-index: 1;
+}
+
+.navigation-bar-bar ul li ul li {
+	float: none;
+}
+
+.navigation-bar-bar li:hover {
+	cursor: pointer;
+}

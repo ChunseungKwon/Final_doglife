@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doglife.db.dao.ShopDao">
+	<select id="selectNewProductList" parameterType="com.doglife.db.dto.ProductListDto" resultType="com.doglife.db.dto.ProductDto">
+		SELECT * FROM product ORDER BY pnum DESC LIMIT 4
+	</select>
+
+	<select id="selectBestProductList" parameterType="com.doglife.db.dto.ProductListDto" resultType="com.doglife.db.dto.ProductDto">
+		SELECT * FROM product WHERE pavg >= 4.5
+		<if test="category != null and category != ''">
+		AND pcategory = #{category}
+		</if>
+	</select>
+		
+	<select id="selectProductList" parameterType="com.doglife.db.dto.ProductListDto" resultType="com.doglife.db.dto.ProductDto">
+		SELECT * FROM product
+		<if test="category != null and category != ''">
+		WHERE pcategory = #{category}
+		</if>
+	</select>
+		
+	<select id="bcntSelect" parameterType="com.doglife.db.dto.ProductListDto" resultType="int">
+		SELECT count(*) FROM product
+	</select>
+
+	<select id="selectProductInfo" parameterType="Integer" resultType="com.doglife.db.dto.ProductDto">
+		SELECT * FROM product WHERE pnum=#{pnum}
+	</select>
+
+	<select id="selectProductOption" parameterType="Integer" resultType="com.doglife.db.dto.ProductOptionDto">
+		SELECT * FROM productoption WHERE pnum=#{pnum}
+	</select>
+	
+	<select id="selectProductFile" parameterType="Integer" resultType="com.doglife.db.dto.ProductFileDto">
+		SELECT * FROM productimage WHERE pnum=#{pnum}
+	</select>
+	
+	<select id="selectProductQnA" parameterType="Integer" resultType="com.doglife.db.dto.ShopQnADto">
+		SELECT * FROM shopqna WHERE pnum=#{pnum}
+	</select>
+	
+	<insert id="insertQuestion" parameterType="com.doglife.db.dto.ShopQnADto">
+		INSERT INTO shopqna
+		VALUES (NULL,#{sqquestion},NULL,'답변대기중',DEFAULT,NULL,#{pnum},#{memberId},#{sellerID})
+	</insert>
+	<select id="selectSeller" parameterType="Integer" resultType="String">
+		SELECT sellerID FROM product WHERE pnum=#{pnum}
+	</select>
+
+
+	<insert id="insertReview" 
+		parameterType="com.doglife.db.dto.ShopReviewDto"
+		useGeneratedKeys="true" keyProperty="srnum">
+		<selectKey keyProperty="srnum" resultType="Integer"
+			order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO shopreview
+		VALUES (NULL,#{srtitle},#{srcontent}, 3, NULL, NULL, #{pnum}, #{memberId}, DEFAULT, NULL)
+	</insert>
+
+	<update id="insertReviewImage" parameterType="com.doglife.db.dto.ShopReviewDto">
+		UPDATE shopreview SET oriname=#{oriname}, sysname=#{sysname} 
+		WHERE srnum = #{srnum}
+	</update>
+	
+	<select id="selectProductReply" parameterType="Integer" resultType="com.doglife.db.dto.ShopReviewDto">
+		SELECT * FROM shopreview WHERE pnum=#{pnum}
+	</select>
+	
+	<select id="getRatingAverage" resultType="double">
+		SELECT productAvg FROM shopreview WHERE pnum = #{pnum}
+	</select>
+	
+	<update id="updateRating">
+		UPDATE shopreview SET productAvg = #{productAvg} WHERE pnum = #{pnum}
+	</update>
+	
+	<select id="customerOrderList" parameterType="String" resultType="com.doglife.db.dto.MyOrderDto">
+		SELECT * FROM myorderlist WHERE memberId=#{memberId} AND orderStatus = '결제완료'
+	</select>
+	
+	<select id="getOneOrderData" parameterType="String" resultType="com.doglife.db.dto.MyOrderDto">
+		SELECT * FROM myorderlist WHERE orderNum=#{orderNum}
+	</select>
+</mapper>

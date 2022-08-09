@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.doglife.db.dao.MemberDao">
+
+	<insert id="memberInsert"
+		parameterType="com.doglife.db.dto.MemberDto">
+		INSERT INTO memberTable VALUES
+		(#{memberId},#{memberPwd},#{memberName},#{memberAddr},#{memberPnum},#{memberBdate}, #{memberType}, default, default, #{licenseNum}, default)
+	</insert>
+
+	<select id="idCheck" parameterType="String" resultType="int">
+		SELECT count(*) FROM memberTable WHERE memberId=#{memberId}
+	</select>
+
+	<select id="pwdSelect" parameterType="String"
+		resultType="String">
+		SELECT memberPwd FROM memberTable WHERE memberId=#{memberId}
+	</select>
+
+	<select id="memberSelect" parameterType="String"
+		resultType="com.doglife.db.dto.MemberDto">
+		SELECT * FROM memberTable WHERE memberId=#{memberId}
+	</select>
+
+	<select id="find_pwd" parameterType="String"
+		resultType="com.doglife.db.dto.MemberDto">
+		SELECT * FROM memberTable WHERE memberId=#{memberId}
+	</select>
+
+	<update id="updatePwd"
+		parameterType="com.doglife.db.dto.MemberDto">
+		UPDATE memberTable SET memberPwd=#{memberPwd} 
+		WHERE memberId=#{memberId}
+	</update>
+
+	<update id="updateinPwd" parameterType="String">
+		UPDATE memberTable SET memberPwd=#{memberPwd}
+	</update>
+
+	<select id="upmemberSelect" parameterType="String"
+		resultType="com.doglife.db.dto.MemberDto">
+		SELECT * FROM memberTable WHERE memberId=#{memberId}
+	</select>
+
+	<update id="updateinadm1"
+		parameterType="com.doglife.db.dto.MemberDto">
+		UPDATE memberTable SET
+		memberName=#{memberName},memberPnum=#{memberPnum},
+		memberAddr=#{memberAddr}, memberBdate=#{memberBdate},
+		memberPwd=#{memberPwd} 
+		WHERE memberId=#{memberId}
+	</update>
+
+	<delete id="deletead"
+		parameterType="com.doglife.db.dto.MemberDto">
+		DELETE FROM memberTable WHERE memberId=#{memberId}
+	</delete>
+
+	<select id="typecheck" parameterType="String"
+		resultType="String">
+		SELECT memberType FROM memberTable WHERE memberId=#{memberId}
+	</select>
+</mapper>

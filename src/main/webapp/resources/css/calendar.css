@@ -1,0 +1,84 @@
+* {
+    /* margin: 0;
+    padding: 0 */
+}
+
+.calendar_box{
+	width: 1000px;
+   	margin: 0 auto;
+}
+
+.custom_calendar_table{
+	border-spacing: 1px;
+	width: 1000px;
+}
+
+.custom_calendar_table td {
+    text-align: center;
+}
+
+.custom_calendar_table thead.cal_date th {
+    font-size: 1.3rem;
+}
+
+.custom_calendar_table thead.cal_date th span {
+    font-size: 1.3rem;
+}
+
+.custom_calendar_table thead.cal_date th button {
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+}
+
+.custom_calendar_table thead.cal_week th {
+    background-color: #b5b5b5;
+    color: #fff;
+    padding: 6px;
+}
+
+.custom_calendar_table tbody .old_day{
+	color: #bdbdbd;
+	background: #f9f9f9;	
+	cursor: default;
+}
+
+.custom_calendar_table tbody .free_day{
+	color: #bdbdbd;
+	background: #f9f9f9;	
+	cursor: default;
+}
+
+.custom_calendar_table tbody td {
+   	cursor: pointer;
+    padding: 0px 6px 47px;
+    border-bottom: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
+    text-align: left;
+    vertical-align: top;
+    font-size: 12px;
+}
+
+.custom_calendar_table tbody td:nth-child(1) {
+    color: red;    
+    border-left: 1px solid #e0e0e0;
+}
+
+.custom_calendar_table tbody td:nth-child(7) {
+    color: #288CFF;
+}
+
+.custom_calendar_table tbody td.select_day {
+    background-color: #288CFF;
+    color: #fff;
+}
+ 
+.check_today > div{
+	width: 99%;
+    height: 98%;
+    background: #ffe5e5;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: -1;
+}

@@ -1,0 +1,613 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>제품 상세 페이지</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<link rel="stylesheet" href="resources/css/style.css">
+
+</head>
+<body onload="init();">
+	<div class="wrap">
+		<header> </header>
+
+		<h2 class="login-header">${productInfo.pname}</h2>
+		<section class="content-item" id="comments">
+			<div class="content">
+				<div class="container bootdey">
+					<div class="col-md-12">
+						<section class="panel">
+							<div class="panel-body">
+								<div class="col-md-6">
+									<div class="pro-img-details">
+										<img src="./resources/images/dogs.jpg" alt="" width="550"
+											height="380">
+									</div>
+									<div class="pro-img-list">
+
+
+										<div class="contain1">
+											<div class="photo_wrap">
+												<div class="contain1_photo">
+													<img class="preview_big_nothing" id="preview_big"
+														src="./resources/images/no_image.png" alt="">
+												</div>
+												<c:forEach var="pfList" items="${productFileList}">
+													<div class="contain1_photo_thumbnail">
+														<div>
+															<img class="thumbnail_img_nothing" id="preview_thumb1"
+																src="./download?sysname=${pfList.sysname}&oriname=${pfList.oriname}"
+																alt="">
+														</div>
+													</div>
+												</c:forEach>
+
+											</div>
+
+										</div>
+										<%-- end : photo_wrap --%>
+
+										<a href="#"> <img
+											src="./download?sysname=${pfList.sysname}&oriname=${pfList.oriname}"
+											alt="">
+										</a> <a href="#"> <img src="./resources/images/dogs.jpg"
+											alt="" width="115" height="100">
+
+										</a>
+
+										<c:forEach var="pfList" items="${productFileList}">
+											<a href="#"> <img
+												src="./download?sysname=${pfList.sysname}&oriname=${pfList.oriname}"
+												alt="" width="115" height="100">
+											</a>
+											<a href="#"> <img src="./resources/images/dogs.jpg"
+												alt="" width="115" height="100">
+											</a>
+											<a href="#"> <img src="./resources/images/dogs.jpg"
+												alt="" width="115" height="100">
+											</a>
+										</c:forEach>
+									</div>
+								</div>
+							</div>
+						</section>
+					</div>
+				</div>
+				<div>
+					<form action="./addCartProduct" method="post">
+						<div class="contain1_product_title">
+							<div>
+								<input type="hidden" name="pnum" id="pnum"
+									value="${productInfo.pnum}">
+							</div>
+
+							<div>
+								<span class="title">상품카테고리</span> : &nbsp; <input type="text"
+									name="pcategory" id="pcategory"
+									value="${productInfo.pcategory}" readonly>
+							</div>
+							<div>
+								<span class="title" style="letter-spacing: 24px">상품명</span> :
+								&nbsp; <input type="text" name="pname" id="pname"
+									value="${productInfo.pname}" readonly>
+							</div>
+							<div>
+								<span class="title" style="letter-spacing: 24px">판매가</span> :
+								&nbsp; <input type=text name="pprice" id="pprice"
+									value="${productInfo.pprice}" readonly>
+							</div>
+							<!-- onblur : 포커스를 잃었을때 이벤트 발생됨-->
+							<div>
+								<span class="title" style="letter-spacing: 24px">적립금</span> :
+								&nbsp; <input type=text name="ppoint" id="ppoint"
+									value="${productInfo.ppoint}" readonly>
+							</div>
+							<div>
+								<span class="title" style="letter-spacing: 30px"></span> <input
+									type="hidden" name="pquantity" id="pquantity" value="1">
+							</div>
+						</div>
+
+						<hr>
+						<!-- 옵션 입력 처리 영역 -->
+						<div class="contain1_product_title_option1">
+							<div>
+								<c:forEach var="olist" items="${optionlist}">
+									<span class="title" style="letter-spacing: 24px">옵션:
+										${olist.poption}</span>&nbsp;
+								<input type="hidden" value="${olist.poption}" name="optitle">
+									<select name="poption" id="poption">
+										<option value="${olist.choiceA}">${olist.choiceA}</option>
+										<option value="${olist.choiceB}">${olist.choiceB}</option>
+										<option value="${olist.choiceC}">${olist.choiceC}</option>
+									</select>
+									<input type="text" id="orderOption" name="orderOption">
+									<hr>
+								</c:forEach>
+							</div>
+						</div>
+						<input type="submit" value="장바구니 추가">
+
+					</form>
+				</div>
+			</div>
+			<div>
+				색상 : <select id="color" onchange="aaa()">
+					<option value="1">1</option>
+					<option value="2">2</option>
+				</select> 크기 : <select id="size" onchange="aaa()">
+					<option value="a">a</option>
+					<option value="b">b</option>
+				</select> <input type="hidden" id="orderOption" name="orderOption">
+				<!-- optionRs 는 DTO의 옵션결과 변수명으로 함 -->
+			</div>
+
+
+
+
+			<div class="col-md-6">
+				<div>
+					<form name="form" method="get">
+						수량 : <input type=hidden name="price" value="${productInfo.pprice}">
+						<input type="text" name="amount" value="1" size="3"
+							onchange="change();"> <input type="button" value=" + "
+							onclick="add();"> <input type="button" value=" - "
+							onclick="del();"><br> 금액 : <input type="text"
+							name="sum" size="11" readonly>원 <br> <input
+							type=hidden name="point" value="${productInfo.ppoint}">
+						적립 포인트 : <input type="text" name="totalpoint" size="11" readonly>포인트
+					</form>
+
+					<p>
+						<button class="btn btn-round btn-danger" type="button">
+							<i class="fa fa-shopping-cart"></i> Add to Cart
+						</button>
+						<button class="btn btn-round btn-danger" type="button">
+							<i class="fa fa-shopping-cart"></i> Click to Buy
+						</button>
+					</p>
+				</div>
+			</div>
+		</section>
+		<section class="content-item" id="comments">
+			<div>
+				<section class="product_information">
+					<div class="information_box">
+						<p>${productInfo.pinfo}</p>
+					</div>
+				</section>
+			</div>
+		</section>
+		<section class="content-item" id="sqquestion">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-8">
+						<div class="container">
+							<div class="row bootstrap snippets bootdeys">
+								<div class="col-md-8 col-sm-12">
+									<div class="comment-wrapper">
+										<div class="panel panel-info">
+											<div class="panel-heading">Q&A</div>
+											<div class="panel-body">
+												<br>
+												<!-- 질문 작성 양식 -->
+												<form id="questionForm">
+													<textarea rows="3" class="write-input ta" name="sqquestion"
+														id="question" placeholder="질문을 적어주세요~"></textarea>
+													<input type="button" value="질문 전송" class="btn-write"
+														onclick="askQuestion(${productInfo.pnum})"
+														style="width: 100%; margin-bottom: 30px;">
+												</form>
+												<!-- 댓글 목록 보기 -->
+												<div id="qtable" style="width: 100%">
+													<!-- 목록 테이블 -->
+													<c:forEach var="qna" items="${qnaList}">
+														<ul class="media-list">
+															<li class="media"><a href="#" class="pull-left">
+															</a>
+																<div class="media-body">
+																	<strong class="text-success">${qna.customerID}</strong>
+																	<p>Q: ${qna.sqquestion}</p>
+																	<p>A: ${qna.sqanswer}</p>
+																</div></li>
+														</ul>
+													</c:forEach>
+												</div>
+												<div id="qtable" style="width: 100%">
+													<hr>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</section>
+
+
+		<section class="content-item" id="comments">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-8">
+						<h3>4 Comments</h3>
+
+						<!-- COMMENT 1 - START -->
+						<c:forEach var="review" items="${productReview}">
+							<div class="media">
+								<a class="pull-left" href="#"><img class="media-object"
+									src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="">s</a>
+								<div class="media-body">
+									<h4 class="media-heading">${review.customerID}</h4>
+									<p>${review.srtitle}
+										<span class="gig-rating text-body-2"> <svg
+												xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1792 1792"
+												width="15" height="15">
+                                    <path fill="currentColor"
+													d="M1728 647q0 22-26 48l-363 354 86 500q1 7 1 20 0 21-10.5 35.5t-30.5 14.5q-19 0-40-12l-449-236-449 236q-22 12-40 12-21 0-31.5-14.5t-10.5-35.5q0-6 2-20l86-500-364-354q-25-27-25-48 0-37 56-46l502-73 225-455q19-41 49-41t49 41l225 455 502 73q56 9 56 46z"></path>
+                                </svg> ${review.productRate}
+										</span>
+									</p>
+									<p>${review.srcontent}Loremipsumdolorsitamet,consectetur
+										adipiscing elit. Lorem ipsum dolor sit amet, consectetur
+										adipiscing elit. Lorem ipsum dolor sit amet, consectetur
+										adipiscing elit. Lorem ipsum dolor sit amet, consectetur
+										adipiscing elit. Lorem ipsum dolor sit amet, consectetur
+										adipiscing elit. Lorem ipsum dolor sit amet, consectetur
+										adipiscing elit.</p>
+									<ul class="list-unstyled list-inline media-detail pull-left">
+										<li><i class="fa fa-calendar"></i>${review.regDate}</li>
+										<li><i class="fa fa-thumbs-up"></i>${review.productRate}</li>
+									</ul>
+								</div>
+							</div>
+						</c:forEach>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+
+	<footer> </footer>
+</body>
+<script src="resources/js/jquery.serializeObject.js"></script>
+<!-- 수량 변경용 스크립트 -->
+<script type="text/javascript">	
+	var price;
+	var amount;
+	var point;
+
+	function init() {
+		price = document.form.price.value;
+		amount = document.form.amount.value;
+		point = document.form.point.value;
+		document.form.sum.value = price;
+		document.form.totalpoint.value = point;
+		document.form.pquantity.value = amount;
+		change();
+	}
+
+	function add() {
+		hm = document.form.amount;
+		sum = document.form.sum;
+		totalpoint = document.form.totalpoint;
+		hm.value++;
+
+		sum.value = parseInt(hm.value) * price;
+		totalpoint.value = parseInt(hm.value) * point;
+		$("#pquantity").val(hm.value);
+	}
+
+	function del() {
+		hm = document.form.amount;
+		sum = document.form.sum;
+		totalpoint = document.form.totalpoint;
+		if (hm.value > 1) {
+			hm.value--;
+			sum.value = parseInt(hm.value) * price;
+			totalpoint.value = parseInt(hm.value) * point;
+		}
+		$("#pquantity").val(hm.value);
+	}
+
+	function change() {
+		hm = document.form.amount;
+		sum = document.form.sum;
+		totalpoint = document.form.totalpoint;
+
+		if (hm.value < 0) {
+			hm.value = 0;
+		}
+		sum.value = parseInt(hm.value) * price;
+		totalpoint.value = parseInt(hm.value) * point;
+		$("#pquantity").val(hm.value);
+	}
+</script>
+<script type="text/javascript">	
+function askQuestion(pnum){
+	console.log(pnum);
+		
+	var qnaForm = $("#questionForm").serializeObject();
+	qnaForm.pnum = pnum;
+	qnaForm.customerID = "${qna.customerID}";
+	console.log(qnaForm);
+	
+	$.ajax({
+		url: "./askQuestion",
+		type: "post",
+		data: qnaForm,
+		dataType: "json",
+		success: function(result){
+			var listStr = "";
+			var qnaList = result.qnaList;
+			console.log(result);
+			console.log(qnaList);
+			
+			for(var i = 0; i < qnaList.length; i++){
+				if(qnaList[i].sqanswer==null || qnaList[i].sqanswer==""){
+					listStr += "<strong class='text-success'>"
+							+ qnaList[i].customerID + "</strong>"
+							+ "<p> Q: "	+ qnaList[i].sqquestion + "</p>"
+							+ "<p> A: No Answer Yet." + "</p>";
+				}
+				else{
+					listStr += "<strong class='text-success'>"
+							+ qnaList[i].customerID + "</strong>"
+							+ "<p> Q: "	+ qnaList[i].sqquestion + "</p>"
+							+ "<p> A: " + qnaList[i].sqanswer + "</p>";
+				}
+			}
+			
+			$("#qtable").html(listStr);
+			$("#question").val("");
+		},
+			error: function(error){
+				console.log(error);
+				alert("질문 입력 실패")
+			}
+		});
+	}
+
+function productQuantity(){
+	if( !isNaN( $('#amount').val() ) ){	// 
+		var pquantity = Number($('#amount').val());
+		pquantity = Math.floor(pquantity)	// 
+		$('#pquantity').val(pquantity);
+	}
+}
+
+
+
+</script>
+
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script>
+    $(function(){
+      $("a").click(function(){
+        var id= $(".id").html();
+        $('.myclass').html("<br><div class='new' id='" + id + "'>Hello</div>");            
+      });
+    });
+    </script>
+
+
+<style type="text/css">
+body {
+	margin-top: 20px;
+}
+
+.comment-wrapper .panel-body {
+	max-height: 650px;
+	overflow: auto;
+}
+
+.comment-wrapper .media-list .media img {
+	width: 64px;
+	height: 64px;
+	border: 2px solid #e5e7e8;
+}
+
+.comment-wrapper .media-list .media {
+	border-bottom: 1px dashed #efefef;
+	margin-bottom: 25px;
+}
+
+/*panel*/
+.panel {
+	border: none;
+	box-shadow: none;
+}
+
+.panel-heading {
+	border-color: #eff2f7;
+	font-size: 16px;
+	font-weight: 300;
+}
+
+.panel-title {
+	color: #2A3542;
+	font-size: 14px;
+	font-weight: 400;
+	margin-bottom: 0;
+	margin-top: 0;
+	font-family: 'Open Sans', sans-serif;
+}
+/*product information*/
+.product_information {
+	width: 100%;
+	padding: 10px;
+	box-sizing: border-box;
+}
+
+.information_box {
+	display: block;
+}
+
+.col-md-6 {
+	display: inline-block;
+}
+
+/* Reply */
+body {
+	margin-top: 20px;
+}
+
+.content-item {
+	padding: 30px 0;
+	background-color: #FFFFFF;
+}
+
+.content-item.grey {
+	background-color: #F0F0F0;
+	padding: 50px 0;
+	height: 100%;
+}
+
+.content-item h2 {
+	font-weight: 700;
+	font-size: 35px;
+	line-height: 45px;
+	text-transform: uppercase;
+	margin: 20px 0;
+}
+
+.content-item h3 {
+	font-weight: 400;
+	font-size: 20px;
+	color: #555555;
+	margin: 10px 0 15px;
+	padding: 0;
+}
+
+.content-headline {
+	height: 1px;
+	text-align: center;
+	margin: 20px 0 70px;
+}
+
+.content-headline h2 {
+	background-color: #FFFFFF;
+	display: inline-block;
+	margin: -20px auto 0;
+	padding: 0 20px;
+}
+
+.grey .content-headline h2 {
+	background-color: #F0F0F0;
+}
+
+.content-headline h3 {
+	font-size: 14px;
+	color: #AAAAAA;
+	display: block;
+}
+
+.comment-wrapper .panel-body {
+	max-height: 650px;
+	overflow: auto;
+}
+
+.comment-wrapper .media-list .media img {
+	width: 64px;
+	height: 64px;
+	border: 2px solid #e5e7e8;
+}
+
+.comment-wrapper .media-list .media {
+	border-bottom: 1px dashed #efefef;
+	margin-bottom: 25px;
+}
+
+#comments {
+	box-shadow: 0 -1px 6px 1px rgba(0, 0, 0, 0.1);
+	background-color: #FFFFFF;
+}
+
+#comments form {
+	margin-bottom: 30px;
+}
+
+#comments .btn {
+	margin-top: 7px;
+}
+
+#comments form fieldset {
+	clear: both;
+}
+
+#comments form textarea {
+	height: 100px;
+}
+
+#comments .media {
+	border-top: 1px dashed #DDDDDD;
+	padding: 20px 0;
+	margin: 0;
+}
+
+#comments .media>.pull-left {
+	margin-right: 20px;
+}
+
+#comments .media img {
+	max-width: 100px;
+}
+
+#comments .media h4 {
+	margin: 0 0 10px;
+}
+
+#comments .media h4 span {
+	font-size: 14px;
+	float: right;
+	color: #999999;
+}
+
+#comments .media p {
+	margin-bottom: 15px;
+	text-align: justify;
+}
+
+#comments .media-detail {
+	margin: 0;
+}
+
+#comments .media-detail li {
+	color: #AAAAAA;
+	font-size: 12px;
+	padding-right: 10px;
+	font-weight: 600;
+}
+
+#comments .media-detail a:hover {
+	text-decoration: underline;
+}
+
+#comments .media-detail li:last-child {
+	padding-right: 0;
+}
+
+#comments .media-detail li i {
+	color: #666666;
+	font-size: 15px;
+	margin-right: 10px;
+}
+</style>
+
+
+</html>
+
+
+
+

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+ <mapper namespace="com.doglife.db.dao.FueneralDao">
+
+	<insert id="fueneralInsert"
+		parameterType="com.doglife.db.dto.FueneralDto" useGeneratedKeys="true" keyProperty="frNum">
+		<selectKey keyProperty="frNum" resultType="Integer" order="AFTER">
+			SELECT LAST_INSERT_ID()
+		</selectKey>
+		INSERT INTO funeralreservation VALUES (NULL, #{frDate}, #{frTime},  
+			#{frDogName}, #{frGuardian}, #{frPnum}, #{frAddr}, #{frWeight}, 
+			#{frPeople}, #{frPrice}, #{frServiceName},DEFAULT,DEFAULT, #{memberId})
+	</insert>
+	
+	<select id="selectReInfo" parameterType="int" resultType="com.doglife.db.dto.FueneralDto">
+		SELECT * FROM funeralreservation WHERE frNum = #{frNum}
+	</select>
+	
+	<select id="selectExistReserv" parameterType="String" resultType="com.doglife.db.dto.FueneralDto">
+		SELECT * FROM funeralreservation WHERE memberId = #{memberId} and (frPayDate is null or frPayDate = '')
+	</select>
+	
+	<delete id="fueneralDelete" parameterType="Integer">
+		DELETE FROM funeralreservation WHERE frNum=#{frNum}
+	</delete>
+	<!-- 
+	<select id="selectR_F_List" parameterType="String" resultType="com.doglife.db.dto.FueneralDto">
+		SELECT * FROM funeralreservation WHERE memberId = #{memberId} limit 1
+	</select>
+	 -->
+	<select id="fr_time_select" parameterType="String" resultType="String">
+		SELECT frTime FROM funeralreservation WHERE frDate = #{frDate} 
+	</select>
+	
+	<select id="fr_My_list" parameterType="com.doglife.db.dto.ListDto" resultType="com.doglife.db.dto.FueneralDto">
+	SELECT frNum, frServiceName, frDate, frTime, frPeople, 
+		case when frDate &lt; CURDATE() then '완료'  			
+			 else '예약완료' end as 'frState'
+		FROM funeralreservation 
+		WHERE memberId = #{memberId} 
+		ORDER BY frNum DESC LIMIT #{pageNum}, #{listCnt}
+	</select>
+	
+	<update id="frPayUpdate" parameterType="com.doglife.db.dto.FueneralDto">
+		UPDATE funeralreservation SET frPayDate= now(), frPayNo = #{frPayNo}
+		WHERE frNum=#{frNum}
+	</update>
+	
+	<select id="boardCountSelect" parameterType="String" resultType="Integer">
+		SELECT count(*) FROM funeralreservation WHERE memberId = #{memberId}
+	</select>
+	
+ </mapper>
